@@ -1,0 +1,148 @@
+.options-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.options-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.options-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.options-param-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.options-param-value {
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.options-select {
+    width: 100%;
+    padding: 0.6rem 2rem 0.6rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(var(--accent-rgb), 0.3);
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.8em;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.options-select:focus {
+    border-color: rgba(var(--accent-rgb), 0.8);
+    box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.18);
+}
+
+/* The dropdown popup derives its colors from the select; a translucent
+   background composites over white there, so give options solid theme
+   colors explicitly. */
+.options-select option {
+    background: var(--bg-color);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .options-select {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.options-description {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--text-secondary);
+}
+
+.options-range {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.options-range:disabled {
+    cursor: not-allowed;
+}
+
+.options-number {
+    width: 110px;
+    padding: 0.45rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid rgba(var(--accent-rgb), 0.3);
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    outline: none;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.options-number:focus {
+    border-color: rgba(var(--accent-rgb), 0.8);
+    box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.18);
+}
+
+[data-theme="light"] .options-number {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.options-hint {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.options-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    width: fit-content;
+}
+
+.options-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.options-checkbox:disabled,
+.options-checkbox:disabled + span {
+    cursor: not-allowed;
+}
+
+.options-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.options-actions .primary-btn {
+    flex: 1;
+}
+
+.options-reset {
+    padding: 0.8rem 1.1rem;
+}

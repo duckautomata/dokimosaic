@@ -1,0 +1,173 @@
+.mosaic-viewer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.2);
+    background-image:
+        linear-gradient(
+            45deg,
+            var(--checkerboard) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--checkerboard) 75%,
+            var(--checkerboard)
+        ),
+        linear-gradient(
+            45deg,
+            var(--checkerboard) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--checkerboard) 75%,
+            var(--checkerboard)
+        );
+    background-size: 20px 20px;
+    background-position:
+        0 0,
+        10px 10px;
+    border: 1px solid var(--panel-border);
+    box-sizing: border-box;
+}
+
+.mosaic-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    touch-action: none;
+    display: block;
+}
+
+.mosaic-canvas.dragging {
+    cursor: grabbing;
+}
+
+.mosaic-viewer-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 10px;
+    background: rgba(var(--overlay-color-rgb), 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--panel-border);
+    z-index: 3;
+}
+
+.mosaic-zoom-btn {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 8px;
+    border-radius: 7px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.mosaic-zoom-btn:hover {
+    background: rgba(var(--accent-rgb), 0.2);
+    color: var(--accent);
+}
+
+.mosaic-zoom-reset {
+    font-size: 0.8rem;
+}
+
+.mosaic-tooltip-toggle {
+    color: var(--text-secondary);
+}
+
+.mosaic-tooltip-toggle.active {
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.15);
+}
+
+.mosaic-tooltip-toggle svg {
+    width: 16px;
+    height: 16px;
+}
+
+.mosaic-zoom-readout {
+    min-width: 48px;
+    text-align: center;
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-secondary);
+}
+
+.mosaic-viewer-hint {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: rgba(var(--overlay-color-rgb), 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--panel-border);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.mosaic-tooltip {
+    position: absolute;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+    pointer-events: none;
+    background: rgba(var(--overlay-color-rgb), 0.9);
+    max-width: 180px;
+}
+
+.mosaic-tooltip img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    image-rendering: auto;
+    flex-shrink: 0;
+}
+
+.mosaic-tooltip-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.mosaic-tooltip-text strong {
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mosaic-tooltip-text span {
+    color: var(--text-secondary);
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+    .mosaic-viewer-hint {
+        display: none;
+    }
+}

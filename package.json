@@ -1,0 +1,42 @@
+{
+    "name": "dokimosaic",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "dev:mock": "vite --mode mock",
+        "build": "vite build",
+        "preview": "vite preview",
+        "format": "oxfmt .",
+        "format:check": "oxfmt --check .",
+        "lint": "oxlint .",
+        "lint:fix": "oxlint --fix .",
+        "test": "vitest",
+        "test:ci": "vitest run --reporter=junit --outputFile=junit.xml",
+        "tiles": "node scripts/generate-tiles.mjs",
+        "tiles:upload": "node scripts/generate-tiles.mjs --upload"
+    },
+    "dependencies": {
+        "papaparse": "^5.5.4",
+        "react": "^19.2.7",
+        "react-dom": "^19.2.7",
+        "react-router-dom": "^7.18.1"
+    },
+    "devDependencies": {
+        "@aws-sdk/client-s3": "^3.1076.0",
+        "@testing-library/dom": "^10.4.1",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.2",
+        "@types/react": "^19.2.17",
+        "@types/react-dom": "^19.2.3",
+        "@vitejs/plugin-react": "^6.0.3",
+        "jsdom": "^29.1.1",
+        "oxfmt": "^0.56.0",
+        "oxlint": "^1.71.0",
+        "sharp": "^0.35.2",
+        "vite": "^8.1.0",
+        "vitest": "^4.1.9",
+        "wrangler": "^4.105.0"
+    }
+}

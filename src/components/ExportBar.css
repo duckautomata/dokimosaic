@@ -1,0 +1,79 @@
+.export-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.export-scale-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.25rem 0.25rem 0.25rem 0.75rem;
+    border-radius: 99px;
+}
+
+[data-theme="light"] .export-scale-group {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.export-scale-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.export-scale-pill {
+    padding: 0.35rem 0.8rem;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: all 0.15s ease;
+}
+
+.export-scale-pill:hover:not(:disabled) {
+    color: var(--text-primary);
+}
+
+.export-scale-pill.active {
+    background: var(--accent);
+    color: var(--accent-contrast);
+}
+
+.export-scale-pill:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.export-actions {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+}
+
+.export-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.export-notice {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+    .export-bar {
+        justify-content: center;
+    }
+}
