@@ -1,7 +1,9 @@
 import { useLayoutEffect } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { hubUrl } from "./config";
 import EnvironmentBadge from "./components/EnvironmentBadge";
 import MockApiBadge from "./components/MockApiBadge";
+import SiteMenu from "./components/SiteMenu";
 import ThemeToggle from "./components/ThemeToggle";
 import UpdateAlert from "./components/UpdateAlert";
 import { useTheme } from "./utils/useTheme";
@@ -33,11 +35,10 @@ export default function App() {
             <UpdateAlert />
             <header className="top-nav">
                 <div className="brand-group">
-                    <Link to="/" className="nav-brand">
-                        Dokimosaic
-                    </Link>
-                    <EnvironmentBadge />
-                    <MockApiBadge />
+                    {/* A single site, so the menu only holds "All my sites". */}
+                    <SiteMenu title="Dokimosaic" hubUrl={hubUrl} />
+                    <EnvironmentBadge className="desktop-only" />
+                    <MockApiBadge className="desktop-only" />
                 </div>
                 <nav className="nav-links">
                     <div className="nav-main-links">

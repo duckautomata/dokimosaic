@@ -1,6 +1,7 @@
 import { ENGINES } from "./algorithms";
 import { clampCanvasSize, TILE_NATIVE_SIZE } from "./constants";
 import { loadManifest } from "./manifest";
+import { effectiveExclusion } from "./palettes";
 import { workingSize } from "./raster";
 import { fetchTiles } from "./tiles";
 
@@ -27,14 +28,20 @@ self.onmessage = async (e) => {
     }
 };
 
-async function handleProcess({ jobId, algorithmId, params, bitmap, excludedKeys = [] }) {
+async function handleProcess({ jobId, algorithmId, params, bitmap, excludedKeys = [], palette }) {
     const engine = ENGINES[algorithmId];
     if (!engine) throw new Error(`Unknown algorithm: ${algorithmId}`);
 
     const t0 = performance.now();
     self.postMessage({ type: "progress", jobId, stage: "loading tiles manifest" });
     const allTiles = await loadManifest();
-    const excluded = new Set(excludedKeys);
+    // The palette is resolved here against the full manifest, so it holds
+    // even if the page has not finished loading its own copy yet.
+    const excluded = effectiveExclusion(
+        allTiles.map((t) => t.key),
+        palette,
+        excludedKeys,
+    );
     const tiles = excluded.size ? allTiles.filter((t) => !excluded.has(t.key)) : allTiles;
     if (!tiles.length) {
         throw new Error("every tile is filtered out. Re-enable at least one tile and try again");

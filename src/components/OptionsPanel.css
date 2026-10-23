@@ -66,6 +66,43 @@
     background-color: rgba(255, 255, 255, 0.9);
 }
 
+/* Segmented control (emote palette), same pill look as the export size picker. */
+.options-segmented {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 99px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .options-segmented {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.options-segment {
+    flex: 1;
+    padding: 0.4rem 0.8rem;
+    border-radius: 99px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: all 0.15s ease;
+}
+
+.options-segment:hover:not(:disabled, .active) {
+    color: var(--text-primary);
+}
+
+.options-segment.active {
+    background: var(--accent);
+    color: var(--accent-contrast);
+}
+
+.options-segment:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .options-description {
     margin: 0.25rem 0 0 0;
     font-size: 0.85rem;

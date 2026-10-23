@@ -5,7 +5,8 @@ import "./OptionsPanel.css";
  * Algorithm picker + per-algorithm parameter controls, rendered generically
  * from the metadata in src/mosaic/algorithmMeta.js. Common options (shared
  * by every algorithm) render after the per-algorithm ones and keep their
- * values when the algorithm changes.
+ * values when the algorithm changes. The emote palette picker (whose emotes
+ * to use) renders first, only when there is more than one palette to pick.
  *
  * @param {Object} props
  * @param {string} props.algorithmId
@@ -14,8 +15,21 @@ import "./OptionsPanel.css";
  * @param {() => void} props.onSubmit
  * @param {boolean} props.disabled - true while a mosaic is processing
  * @param {boolean} props.hasResult - switches the submit label
+ * @param {{id: string, label: string}[]} [props.paletteOptions] - emote palettes to pick from; no picker when empty
+ * @param {string} [props.palette] - selected palette id
+ * @param {(palette: string) => void} [props.onPaletteChange]
  */
-export default function OptionsPanel({ algorithmId, params, onChange, onSubmit, disabled, hasResult }) {
+export default function OptionsPanel({
+    algorithmId,
+    params,
+    onChange,
+    onSubmit,
+    disabled,
+    hasResult,
+    paletteOptions = [],
+    palette,
+    onPaletteChange,
+}) {
     const algo = ALGORITHM_MAP.get(algorithmId);
 
     const setParam = (key, value) => {
@@ -39,6 +53,29 @@ export default function OptionsPanel({ algorithmId, params, onChange, onSubmit, 
                 if (!disabled) onSubmit();
             }}
         >
+            {paletteOptions.length > 0 && (
+                <div className="options-field">
+                    <span className="options-label" id="options-palette-label">
+                        Emotes
+                    </span>
+                    <div className="options-segmented" role="group" aria-labelledby="options-palette-label">
+                        {paletteOptions.map((p) => (
+                            <button
+                                key={p.id}
+                                type="button"
+                                aria-pressed={palette === p.id}
+                                className={`options-segment ${palette === p.id ? "active" : ""}`.trim()}
+                                disabled={disabled}
+                                onClick={() => onPaletteChange(p.id)}
+                            >
+                                {p.label}
+                            </button>
+                        ))}
+                    </div>
+                    <span className="options-hint">Whose emotes the mosaic is built from.</span>
+                </div>
+            )}
+
             <div className="options-field">
                 <label className="options-label" htmlFor="options-algorithm">
                     Algorithm

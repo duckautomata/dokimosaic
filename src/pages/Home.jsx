@@ -7,6 +7,16 @@ import ProcessingOverlay from "../components/ProcessingOverlay";
 import TileFilter from "../components/TileFilter";
 import { defaultParams } from "../mosaic/algorithmMeta";
 import { loadManifest } from "../mosaic/manifest";
+import {
+    inPalette,
+    paletteLabels,
+    paletteOptions,
+    presentPalettes,
+    readStoredPalette,
+    replaceListedExclusions,
+    resolvePalette,
+    storePalette,
+} from "../mosaic/palettes";
 import { useMosaicWorker } from "../mosaic/useMosaicWorker";
 import { LOG_ERROR } from "../utils/debug";
 import { loadFromBlob, loadFromUrl } from "../utils/imageLoad";
@@ -20,8 +30,20 @@ export default function Home() {
     const [params, setParams] = useState(() => defaultParams("grid"));
     const [tileNames, setTileNames] = useState(null);
     const [tileList, setTileList] = useState([]); // [{key, name}] - full library, for the filter
-    const [excludedKeys, setExcludedKeys] = useState(() => new Set());
+    const [excludedKeys, setExcludedKeys] = useState(() => new Set()); // tile filter exclusions, across every palette
+    const [paletteChoice, setPaletteChoice] = useState(readStoredPalette);
     const worker = useMosaicWorker();
+
+    // Emote palettes in the manifest. The picker, the filter's tile list and
+    // the copy follow the viewer's choice resolved against them.
+    const present = presentPalettes(tileList.map((t) => t.key));
+    const palette = resolvePalette(paletteChoice, present);
+    const paletteTiles = tileList.filter((t) => inPalette(t.key, palette));
+    const paletteKeys = paletteTiles.map((t) => t.key);
+    const paletteExcluded = new Set(paletteKeys.filter((key) => excludedKeys.has(key)));
+    const emoteOwners = paletteLabels(paletteChoice, present)
+        .map((label) => `${label}'s`)
+        .join(" and ");
 
     useEffect(() => {
         Promise.all([loadTileNames(), loadManifest().catch(() => [])]).then(([names, tiles]) => {
@@ -77,7 +99,12 @@ export default function Home() {
 
     const handleCreate = () => {
         if (!source) return;
-        worker.process(source.bitmap, algorithmId, params, excludedKeys);
+        worker.process(source.bitmap, algorithmId, params, excludedKeys, paletteChoice);
+    };
+
+    const handlePaletteChange = (next) => {
+        storePalette(next);
+        setPaletteChoice(next);
     };
 
     const handleOptionsChange = (nextAlgorithm, nextParams) => {
@@ -90,7 +117,7 @@ export default function Home() {
             <div className="home-page">
                 <section className="home-hero">
                     <p className="home-subtitle">
-                        Turn any image into a mosaic built from Doki&apos;s emotes. Drop a picture below, pick an
+                        Turn any image into a mosaic built from {emoteOwners} emotes. Drop a picture below, pick an
                         algorithm, and zoom into every tile of the result.
                     </p>
                 </section>
@@ -138,15 +165,20 @@ export default function Home() {
                             onSubmit={handleCreate}
                             disabled={worker.status === "processing"}
                             hasResult={!!worker.result}
+                            paletteOptions={paletteOptions(present)}
+                            palette={palette}
+                            onPaletteChange={handlePaletteChange}
                         />
                     </div>
 
-                    {tileList.length > 0 && (
+                    {paletteTiles.length > 0 && (
                         <div className="home-options-card glass-panel">
                             <TileFilter
-                                tiles={tileList}
-                                excluded={excludedKeys}
-                                onChange={setExcludedKeys}
+                                tiles={paletteTiles}
+                                excluded={paletteExcluded}
+                                onChange={(next) =>
+                                    setExcludedKeys((prev) => replaceListedExclusions(prev, paletteKeys, next))
+                                }
                                 disabled={worker.status === "processing"}
                             />
                         </div>
