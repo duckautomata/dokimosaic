@@ -68,4 +68,33 @@ describe("OptionsPanel", () => {
         expect(screen.getByRole("button", { name: "Create Mosaic" })).toBeDisabled();
         expect(screen.getByLabelText(/Algorithm/i)).toBeDisabled();
     });
+
+    describe("emote palette picker", () => {
+        const PALETTE_OPTIONS = [
+            { id: "doki", label: "Doki" },
+            { id: "mint", label: "Mint" },
+            { id: "both", label: "Both" },
+        ];
+
+        it("is hidden without palette options", () => {
+            setup();
+            expect(screen.queryByRole("group", { name: "Emotes" })).not.toBeInTheDocument();
+            expect(screen.queryByRole("button", { name: "Doki" })).not.toBeInTheDocument();
+        });
+
+        it("shows the selected palette and reports changes", () => {
+            const onPaletteChange = vi.fn();
+            setup({ paletteOptions: PALETTE_OPTIONS, palette: "doki", onPaletteChange });
+            expect(screen.getByRole("group", { name: "Emotes" })).toBeInTheDocument();
+            expect(screen.getByRole("button", { name: "Doki" })).toHaveAttribute("aria-pressed", "true");
+            expect(screen.getByRole("button", { name: "Both" })).toHaveAttribute("aria-pressed", "false");
+            fireEvent.click(screen.getByRole("button", { name: "Mint" }));
+            expect(onPaletteChange).toHaveBeenCalledWith("mint");
+        });
+
+        it("is disabled while processing", () => {
+            setup({ paletteOptions: PALETTE_OPTIONS, palette: "both", onPaletteChange: vi.fn(), disabled: true });
+            expect(screen.getByRole("button", { name: "Mint" })).toBeDisabled();
+        });
+    });
 });

@@ -16,8 +16,8 @@ export const useVersionCheck = (intervalMs = 5 * 60 * 1000) => {
 
     const checkVersion = async () => {
         try {
-            // Fetch version.json from the root
-            const response = await fetch("/dokimosaic/version.json", {
+            // Fetch version.json from this build's base path
+            const response = await fetch(`${import.meta.env.BASE_URL}version.json`, {
                 cache: "no-store", // Ensure we don't get a cached version
             });
             if (!response.ok) return;

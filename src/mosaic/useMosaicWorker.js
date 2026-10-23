@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LOG_ERROR, LOG_MSG } from "../utils/debug";
+import { DEFAULT_PALETTE } from "./palettes";
 
 /**
  * Owns the mosaic Web Worker: process / export / cancel. Cancel terminates
@@ -72,7 +73,7 @@ export function useMosaicWorker() {
     }, []);
 
     const process = useCallback(
-        (bitmap, algorithmId, params, excludedKeys = []) => {
+        (bitmap, algorithmId, params, excludedKeys = [], palette = DEFAULT_PALETTE) => {
             const jobId = ++jobIdRef.current;
             setStatus("processing");
             setStage("starting");
@@ -89,6 +90,7 @@ export function useMosaicWorker() {
                 params,
                 bitmap,
                 excludedKeys: [...excludedKeys],
+                palette,
             });
         },
         [getWorker],

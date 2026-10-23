@@ -16,5 +16,5 @@ export const router = createBrowserRouter(
             ],
         },
     ],
-    { basename: "/dokimosaic/" },
+    { basename: import.meta.env.BASE_URL },
 );

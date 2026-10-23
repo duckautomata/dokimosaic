@@ -14,7 +14,8 @@
  * Optional overrides:
  *   TILES_BUCKET, TILES_SUBFOLDERS (comma-separated),
  *   TILES_IGNORE_EXTENSIONS (comma-separated),
- *   TILES_IGNORE_SUFFIXES (comma-separated)
+ *   TILES_IGNORE_SUFFIXES (comma-separated),
+ *   TILES_MANIFEST_KEY
  *
  * Run:  node scripts/generate-tiles.mjs [--upload]
  */
@@ -27,14 +28,17 @@ import { centerSquare, FEAT_GRID, featurePatch } from "./tileFeatures.mjs";
 
 // --- Configuration (overridable via TILES_* environment variables) --------
 const BUCKET_NAME = process.env.TILES_BUCKET || "cms-assets";
-const SUBFOLDERS = csv(process.env.TILES_SUBFOLDERS) ?? ["dokimotes"];
+// Each subfolder is one emote palette on the site (the key prefix decides
+// it, see src/mosaic/palettes.js). An empty or missing one adds no tiles.
+const SUBFOLDERS = csv(process.env.TILES_SUBFOLDERS) ?? ["dokimotes", "mintomotes"];
 // Skipped so the manifest only lists original uploads: preview/thumbnail
 // variants (_p.webp/_t.webp) fall to the webp rule, and the suffix list
-// keeps them out even if webp originals are ever allowed in.
-const IGNORE_EXTENSIONS = csv(process.env.TILES_IGNORE_EXTENSIONS) ?? ["gif", "webp", "csv"];
+// keeps them out even if webp originals are ever allowed in. GIFs stay in
+// (animated emotes, matched on their first frame).
+const IGNORE_EXTENSIONS = csv(process.env.TILES_IGNORE_EXTENSIONS) ?? ["webp", "csv"];
 const IGNORE_SUFFIXES = csv(process.env.TILES_IGNORE_SUFFIXES) ?? ["_p.webp", "_t.webp"];
 
-const MANIFEST_KEY = "dokimosaic/tiles.json";
+const MANIFEST_KEY = process.env.TILES_MANIFEST_KEY?.trim() || "dokimosaic/tiles.json";
 const OUT_PATH = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "tiles.json");
 const WORKERS = 8;
 
@@ -69,6 +73,7 @@ async function listTileKeys(s3) {
     const keys = new Set(); // Set, not array: dedupes overlapping prefixes
     for (const sub of SUBFOLDERS) {
         const prefix = sub.replace(/\/+$/, "") + "/";
+        const before = keys.size;
         let pages = 0;
         let token;
         do {
@@ -86,7 +91,7 @@ async function listTileKeys(s3) {
             }
             token = page.IsTruncated ? page.NextContinuationToken : undefined;
         } while (token);
-        console.log(`  ${prefix}: ${pages} listing page(s)`);
+        console.log(`  ${prefix}: ${keys.size - before} tile image(s), ${pages} listing page(s)`);
     }
     return [...keys].sort();
 }

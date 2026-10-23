@@ -1,9 +1,10 @@
 name: Generate Tiles Manifest
 
 # Rebuilds tiles.json from the tile images in R2 and uploads it to
-# r2://cms-assets/dokimosaic/tiles.json. Run this whenever emotes are added
-# or updated. Requires repo secrets R2_ACCOUNT_ID, R2_ACCESS_KEY_ID and
-# R2_SECRET_ACCESS_KEY (an R2 API token with read+write on the bucket).
+# r2://cms-assets/dokimosaic/tiles.json (the manifest_key input). Run this
+# whenever emotes are added or updated. Requires repo secrets R2_ACCOUNT_ID,
+# R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY (an R2 API token with read+write
+# on the bucket).
 
 concurrency:
     group: ${{ github.workflow }}
@@ -13,17 +14,21 @@ on:
     workflow_dispatch:
         inputs:
             subfolders:
-                description: "Bucket subfolders to scan (comma-separated)"
+                description: "Bucket subfolders to scan, one emote palette each (comma-separated)"
                 required: false
-                default: "dokimotes"
+                default: "dokimotes,mintomotes"
             ignore_extensions:
                 description: "File extensions to skip (comma-separated)"
                 required: false
-                default: "gif,webp,csv"
+                default: "webp,csv"
             ignore_suffixes:
                 description: "Key suffixes to skip, e.g. size variants (comma-separated)"
                 required: false
                 default: "_p.webp,_t.webp"
+            manifest_key:
+                description: "Bucket key to upload the manifest to"
+                required: false
+                default: "dokimosaic/tiles.json"
             upload:
                 description: "Upload the manifest to R2 (uncheck for a dry run)"
                 type: boolean
@@ -60,6 +65,7 @@ jobs:
                   TILES_SUBFOLDERS: ${{ inputs.subfolders }}
                   TILES_IGNORE_EXTENSIONS: ${{ inputs.ignore_extensions }}
                   TILES_IGNORE_SUFFIXES: ${{ inputs.ignore_suffixes }}
+                  TILES_MANIFEST_KEY: ${{ inputs.manifest_key }}
               run: node scripts/generate-tiles.mjs ${{ inputs.upload && '--upload' || '' }}
 
             - name: Attach Manifest Artifact
